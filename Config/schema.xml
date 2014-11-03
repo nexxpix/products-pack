@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="thelia" namespace="ProductsPack\Model">
+    <table name="pack">
+        <column name="id" autoIncrement="true" primaryKey="true" required="true" type="INTEGER" />
+        <column name="is_active" required="true" type="BOOLEAN" />
+        <column name="product_id" required="true" type="INTEGER" />
+        <foreign-key foreignTable="product" name="fk_product_is_pack">
+            <reference local="product_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="product_pack">
+        <column name="pack_id" required="true" type="INTEGER" primaryKey="true" />
+        <column name="product_id" required="true" type="INTEGER" primaryKey="true" />
+        <foreign-key foreignTable="pack" name="fk_productpack">
+            <reference local="pack_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="product" name="fk_product_in_pack">
+            <reference local="product_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+</database>

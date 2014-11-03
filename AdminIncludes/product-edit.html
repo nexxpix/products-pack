@@ -1,0 +1,134 @@
+{if {product attr="id"}}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12 title">
+                    {intl d="productspack" l="Manage products packs"}
+                </div>
+            </div>
+
+            <!-- Change product's status : is a pack or not -->
+            <div class="row">
+                <div class="col-md-12">
+                    {form name="productspack.pack.changestatus"}
+                        <form action="{url path='/admin/module/ProductsPack/changePackStatus'}" id="changePackStatusForm" method="post" role="form" {form_enctype form=$form}>
+                            {form_hidden_fields form=$form}
+                            
+                            {form_field form=$form field="productId"}
+                                <input type="hidden" name="{$name}" value="{product attr='id'}">
+                            {/form_field}
+                            
+                            {form_field form=$form field="isPack"}
+                                <div class="form-group">
+                                    <label>{intl d="productspack" l="{$label}"} ?</label>
+
+                                    {loop type="product_pack" name="linkedToPack" product_id={product attr="id"}}
+                                        <em>{intl d="productspack" l="This product already belongs to one or several pack(s). You can't make packs of packs"}.</em>
+                                    {/loop}
+                                    
+                                    <div class="checkbox">
+                                        <div class="make-switch switch-small module-activation" data-id="{product attr='id'}" data-on="success" data-off="danger" data-on-label="<i class='glyphicon glyphicon-ok-circle'></i>" data-off-label="<i class='glyphicon glyphicon-remove-circle'></i>">
+                                            <input type="checkbox" id="isPack" name="{$name}" class="col-sm-1" onchange="this.form.submit();"
+                                                {loop type="pack" name="packStatus" product_id="{product attr="id"}" is_active="true"}
+                                                    checked
+                                                {/loop}
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            {/form_field}
+                        </form>
+                    {/form}
+                </div>
+            </div>
+            <br />
+            
+            {* If the product is a pack, list it's products *}
+            {ifloop rel="productsPack"}
+                {loop type="pack" name="productsPack" product_id="{product attr="id"}" is_active="true"}
+                    {* If the pack has some linked products *}
+                    {ifloop rel="hasLinkedProducts"}
+                        <!-- List of products linked to the pack -->
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{intl d="productspack" l="Linked products"}</th>
+                                    <th>{intl d="productspack" l="Remove"}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loop type="product_pack" name="hasLinkedProducts" pack_id=$ID}
+                                    <tr>
+                                        <td>
+                                            {loop type="product" name="linkedProduct" id=$PRODUCT_ID}
+                                                {$TITLE}
+                                            {/loop}
+                                        </td>
+                                        <td>
+                                            <!-- Remove the product from the pack -->
+                                            {form name="productspack.productpack.remove"}
+                                            <form action="{url path='/admin/module/ProductsPack/removeProductFromPack'}" role="form" {form_enctype form=$form}>
+                                                {form_hidden_fields form=$form}
+
+                                                {form_field form=$form field="productId"}
+                                                    <input type="hidden" name="{$name}" value="{$PRODUCT_ID}">
+                                                {/form_field}
+
+                                                {form_field form=$form field="packId"}
+                                                    <input type="hidden" name="{$name}" value="{$PACK_ID}">
+                                                {/form_field}
+
+                                                <button type="submit" title="{intl d='productspack' l='Remove'}" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+                                            </form>
+                                            {/form}
+                                        </td>
+                                    </tr>
+                                {/loop}
+                            </tbody>
+                        </table>
+                    {/ifloop}
+                {/loop}
+            {/ifloop}
+            
+            {* Else, we can select a pack for the product *}
+            {elseloop rel="productsPack"}
+                <div class="row">
+                    <div class="col-md-12">
+                        {form name="productspack.productpack.create"}
+                            <form action="{url path='/admin/module/ProductsPack/addToPack'}" method="post" role="form">
+                                {form_hidden_fields form=$form}
+                                {form_field form=$form field="productId"}
+                                    <input type="hidden" name="{$name}" value="{product attr='id'}">
+                                {/form_field}
+                                
+                                <!-- Packs list -->
+                                {form_field form=$form field="packId"}
+                                    <div class="form-group">
+                                        <label for="selectPack">{intl d="productspack" l="{$label}"}</label>
+                                        <select name="{$name}" id="selectPack" class="form-control" size="4" multiple>
+                                            {loop type="pack" name="packs" is_active="true"}
+                                                <option value="{$ID}" >
+                                                    {* Show online and offline products *}
+                                                    {loop type="product" name="productPack" id=$PRODUCT_ID visible="yes"}
+                                                        {$TITLE}
+                                                    {/loop}
+                                                    {loop type="product" name="productPack" id=$PRODUCT_ID visible="no"}
+                                                        {$TITLE}
+                                                    {/loop}
+                                                    {loop type="product_pack" name="combinationExists" pack_id=$ID product_id={product attr="id"}}
+                                                        --- \ ! / {intl d="productspack" l="Already in this pack"} \ ! /
+                                                    {/loop}
+                                                </option>
+                                            {/loop}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-default">OK</button>
+                                {/form_field}
+                            </form>
+                        {/form}
+                    </div>
+                </div>
+            {/elseloop}
+        </div>
+    </div>
+{/if}
