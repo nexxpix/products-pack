@@ -23,7 +23,7 @@ class ProductsPack extends BaseModule
         parent::postActivation($con);
         if (!is_null($con)) {
             $database = new Database($con);
-            $database->insertSql(null, array(THELIA_ROOT . '/local/modules/ProductsPack/Config/create.sql'));
+            $database->insertSql(null, array(__DIR__ . '/Config/create.sql'));
         }
     }
     
@@ -32,7 +32,7 @@ class ProductsPack extends BaseModule
         parent::destroy($con, $deleteModuleData);
         if(!is_null($con) && $deleteModuleData === true) {
             $database = new Database($con);
-            $database->insertSql(null, array(THELIA_ROOT . '/local/modules/ProductsPack/Config/delete.sql'));
+            $database->insertSql(null, array(__DIR__ . '/Config/delete.sql'));
         }
     }
 }
