@@ -17,21 +17,20 @@ class RemoveProductPackLinkForm extends BaseForm
     protected function buildForm()
     {
         $this->formBuilder
-        ->add("productId", "number",
-            array(
-                "constraints" => array(
-                    new Constraints\NotBlank()
+            ->add("productId", "number",
+                array(
+                    "constraints" => array(
+                        new Constraints\NotBlank()
+                    )
                 )
             )
-        )
-        ->add("packId", "number",
-            array(
-                "constraints" => array(
-                    new Constraints\NotBlank()
-                ),
-                "label" => "Select a pack for this product"
-            )
-        );
+            ->add("packId", "number",
+                array(
+                    "constraints" => array(
+                        new Constraints\NotBlank()
+                    )
+                )
+            );
     }
 
     public function getName()

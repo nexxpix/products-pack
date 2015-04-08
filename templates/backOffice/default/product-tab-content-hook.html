@@ -22,14 +22,14 @@
                                 <div class="form-group">
                                     <label>{intl d="productspack" l="{$label}"} ?</label>
 
-                                    {loop type="product_pack" name="linkedToPack" product_id={product attr="id"}}
+                                    {loop type="product_pack" name="linkedToPack" product_id={product attr="id"} limit=1}
                                         <em>{intl d="productspack" l="This product already belongs to one or several pack(s). You can't make packs of packs"}.</em>
                                     {/loop}
                                     
                                     <div class="checkbox">
-                                        <div class="make-switch switch-small module-activation" data-id="{product attr='id'}" data-on="success" data-off="danger" data-on-label="<i class='glyphicon glyphicon-ok-circle'></i>" data-off-label="<i class='glyphicon glyphicon-remove-circle'></i>">
-                                            <input type="checkbox" id="isPack" name="{$name}" class="col-sm-1" onchange="this.form.submit();"
-                                                {loop type="pack" name="packStatus" product_id="{product attr="id"}" is_active="true"}
+                                        <div id="isPack" class="make-switch switch-small module-activation" data-id="{product attr='id'}" data-on="success" data-off="danger" data-on-label="<i class='glyphicon glyphicon-ok-circle'></i>" data-off-label="<i class='glyphicon glyphicon-remove-circle'></i>">
+                                            <input type="checkbox" name="{$name}" class="col-sm-1"
+                                                {loop type="pack" name="packStatus" product_id="{product attr='id'}" is_active="true"}
                                                     checked
                                                 {/loop}
                                             >
@@ -45,7 +45,7 @@
             
             {* If the product is a pack, list it's products *}
             {ifloop rel="productsPack"}
-                {loop type="pack" name="productsPack" product_id="{product attr="id"}" is_active="true"}
+                {loop type="pack" name="productsPack" product_id="{product attr="id"}"}
                     {* If the pack has some linked products *}
                     {ifloop rel="hasLinkedProducts"}
                         <!-- List of products linked to the pack -->
@@ -67,7 +67,7 @@
                                         <td>
                                             <!-- Remove the product from the pack -->
                                             {form name="productspack.productpack.remove"}
-                                            <form action="{url path='/admin/module/ProductsPack/removeProductFromPack'}" role="form" {form_enctype form=$form}>
+                                            <form action="{url path='/admin/module/ProductsPack/removeProductFromPack'}" role="form" {form_enctype form=$form} method="post">
                                                 {form_hidden_fields form=$form}
 
                                                 {form_field form=$form field="productId"}
@@ -105,17 +105,17 @@
                                 {form_field form=$form field="packId"}
                                     <div class="form-group">
                                         <label for="selectPack">{intl d="productspack" l="{$label}"}</label>
-                                        <select name="{$name}" id="selectPack" class="form-control" size="4" multiple>
+                                        <select name="{$name}" id="selectPack" class="form-control" size="4">
                                             {loop type="pack" name="packs" is_active="true"}
-                                                <option value="{$ID}" >
-                                                    {* Show online and offline products *}
-                                                    {loop type="product" name="productPack" id=$PRODUCT_ID visible="yes"}
+                                                <option value="{$ID}">
+                                                    {* Show online and offline products for packs preparation before they are visible *}
+                                                    {loop type="product" name="productPackOnline" id=$PRODUCT_ID visible="yes"}
                                                         {$TITLE}
                                                     {/loop}
-                                                    {loop type="product" name="productPack" id=$PRODUCT_ID visible="no"}
+                                                    {loop type="product" name="productPackOffline" id=$PRODUCT_ID visible="no"}
                                                         {$TITLE}
                                                     {/loop}
-                                                    {loop type="product_pack" name="combinationExists" pack_id=$ID product_id={product attr="id"}}
+                                                    {loop type="product_pack" name="combinationExistsWarning" pack_id=$ID product_id={product attr="id"}}
                                                         --- \ ! / {intl d="productspack" l="Already in this pack"} \ ! /
                                                     {/loop}
                                                 </option>

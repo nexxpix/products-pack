@@ -2,16 +2,17 @@
 
 namespace ProductsPack\Controller;
 
+use ProductsPack\Event\ProductPackEvent;
 use Thelia\Controller\Admin\BaseAdminController;
+use Thelia\Form\Exception\FormValidationException;
+use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Core\Security\AccessManager;
 use ProductsPack\Form\ChangePackStatusForm;
 use ProductsPack\Form\LinkProductToPackForm;
 use ProductsPack\Form\RemoveProductPackLinkForm;
-use ProductsPack\Model\Pack;
 use ProductsPack\Model\PackQuery;
-use ProductsPack\Model\ProductPack;
 use ProductsPack\Model\ProductPackQuery;
-use Thelia\Tools\URL;
-use Thelia\Core\Event\Product\ProductEvent;
+use ProductsPack\Event\PackEvent;
 
 /**
  * Class ProductsPackController
@@ -22,63 +23,34 @@ use Thelia\Core\Event\Product\ProductEvent;
  */
 class ProductsPackController extends BaseAdminController
 {
-
     /**
-     * Create a new pack.
-     * Called by changePackStatusAction()
-     * 
-     * @param type $productId
+     * Change the product status (pack or not)
+     * Call the Create action if the product has never been a pack
+     * Call the Update action if the product is present into the Pack table
+     *
+     * @return mixed|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      */
-    public function createPack($productId)
-    {
-        $pack = new Pack();
-        $pack->setProductId($productId);
-        $pack->setIsActive(1);
-        $pack->save();
-    }
-
-    /**
-     * Update the pack's status : set the product as a pack or not.
-     * Called by changePackStatusAction()
-     * 
-     * @param type $packQuery
-     * @param type $newStatus
-     */
-    public function updatePackStatus($packQuery, $newStatus)
-    {
-        // Deactivation
-        if ($packQuery->getIsActive() == 1 && $newStatus == 0) {
-            $packQuery->setIsActive($newStatus);
-            $packQuery->save();
-
-            // TODO (if I remember why I wanted to do this) : Remove all links with products
-        }
-        // Activation
-        elseif ($packQuery->getIsActive() == 0 && $newStatus == 1) {
-            $packQuery->setIsActive($newStatus);
-            $packQuery->save();
-        } else {
-            // Error : the product is already what you want it to be
-        }
-    }
-
     public function changePackStatusAction()
     {
+        if (null !== $response = $this->checkAuth(AdminResources::MODULE, 'ProductsPack', [AccessManager::UPDATE, AccessManager::CREATE])) {
+            return $response;
+        }
+
         // Initialize vars
         $request = $this->getRequest();
         $cpsf = new ChangePackStatusForm($request);
-        $form = $cpsf->getForm();
 
         // Form verification
-        $form->bind($request);
-
-        if ($form->isValid()) {
+        try {
+            $form = $this->validateForm($cpsf);
 
             $productId = $form->get('productId')->getData();
             $newStatus = $form->get('isPack')->getData();
 
-            // Search if the product is in Pack table (active or not)
+            // Search if the product is in Pack table
             $packQuery = PackQuery::create()->findOneByProductId($productId);
+
             // Search if the product is linked to a pack
             $productPackQuery = ProductPackQuery::create()->findByProductId($productId);
 
@@ -86,34 +58,61 @@ class ProductsPackController extends BaseAdminController
             if (count($productPackQuery) == 0) {
 
                 // IF the product is absent from Pack table
-                if (count($packQuery) == 0) {
-                    $this->createPack($productId);
+                if ($packQuery === null) {
+                    $event = new PackEvent(1, $productId);
+                    $this->dispatch('action.createPack', $event);
                 } else {
-                    $this->updatePackStatus($packQuery, $newStatus);
+                    // Deactivation
+                    if ($packQuery->getIsActive() == 1 && $newStatus == 0) {
+                        $event = new PackEvent($newStatus, $packQuery->getProductId());
+                    }
+                    // Activation
+                    elseif ($packQuery->getIsActive() == 0 && $newStatus == 1) {
+                        $event = new PackEvent($newStatus, $packQuery->getProductId());
+                    } else {
+                        throw new \Exception("The product is already what you want it to be");
+                    }
+
+                    // Dispatch
+                    $this->dispatch('action.updatePack', $event);
                 }
-            } else {
-                // Return error "This product is already linked to another pack and can't be converted into a pack."
             }
-        } else {
-            /*
-             * Should receive here errors from form validation ... But not.
-             */
+            /* else {
+                throw new \Exception("This product is already linked to another pack and can't be converted into a pack.");
+            }
+            */
+
+            return $this->generateRedirectFromRoute(
+                'admin.products.update',
+                array(
+                    'product_id' => $productId,
+                    'current_tab' => 'modules'
+                )
+            );
+        } catch (FormValidationException $e) {
+            throw new \Exception($this->createStandardFormValidationErrorMessage($e));
         }
-        $this->redirect(URL::getInstance()->absoluteUrl($this->getRoute(
-                                'admin.products.update', array('product_id' => $form->get("productId")->getData()))));
     }
 
+    /**
+     * Add a product to an existing pack
+     *
+     * @return mixed|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
     public function addToPackAction()
     {
+        if (null !== $response = $this->checkAuth(AdminResources::MODULE, 'ProductsPack', [AccessManager::UPDATE, AccessManager::CREATE])) {
+            return $response;
+        }
+
         // Initialize vars
         $request = $this->getRequest();
         $lptpf = new LinkProductToPackForm($request);
-        $form = $lptpf->getForm();
 
         // Form verification
-        $form->bind($request);
-
-        if ($form->isValid()) {
+        try {
+            $form = $this->validateForm($lptpf);
 
             $productId = $form->get('productId')->getData();
             $packId = $form->get('packId')->getData();
@@ -124,66 +123,83 @@ class ProductsPackController extends BaseAdminController
                     ->findOneByProductId($productId);
 
             // IF the product is not an active pack
-            if (count($packQuery) == 0) {
+            if ($packQuery === null) {
 
                 // Search if the combination product/pack already exists
                 $productPackQuery = ProductPackQuery::create()
                         ->filterByPackId($packId)
                         ->findByProductId($productId);
 
-                // IF the combination doesn't exist
+                // IF the combination doesn't exist, create new link between product & pack
                 if (count($productPackQuery) == 0) {
 
-                    // Create new link between product & pack
-                    $productLinkPack = new ProductPack();
-                    $productLinkPack->setProductId($productId);
-                    $productLinkPack->setPackId($packId);
-                    $productLinkPack->save();
-                } else {
-                    $this->get('session')->getFlashBag()->add(
-                            'message', 'This product is already linked to the selected pack'
-                    );
+                    // Dispatch
+                    $event = new ProductPackEvent($packId, $productId);
+                    $this->dispatch('action.createProductPackLink', $event);
                 }
-            } else {
-                $this->get('session')->getFlashBag()->add(
-                        'message', "This product is already a pack and can't be part of a pack."
+
+                return $this->generateRedirectFromRoute(
+                    'admin.products.update',
+                    array(
+                        'product_id' => $productId,
+                        'current_tab' => 'modules'
+                    )
                 );
+
+                /* else {
+                    throw new \Exception("This product is already linked to the selected pack.");
+                } */
+            } else {
+                throw new \Exception("This product is already a pack and can't be part of a pack.");
             }
+        } catch (FormValidationException $e) {
+            throw new \Exception($this->createStandardFormValidationErrorMessage($e), null, $e);
         }
-        $this->redirect(URL::getInstance()->absoluteUrl($this->getRoute(
-                                'admin.products.update', array('product_id' => $form->get("productId")->getData()))));
     }
 
+    /**
+     * Remove a product from a pack
+     *
+     * @return mixed|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
     public function removeProductFromPackAction()
     {
+        if (null !== $response = $this->checkAuth(AdminResources::MODULE, 'ProductsPack', AccessManager::DELETE)) {
+            return $response;
+        }
+
         // Initialize vars
         $request = $this->getRequest();
         $rpplf = new RemoveProductPackLinkForm($request);
-        $form = $rpplf->getForm();
 
         // Form verification
-        $form->bind($request);
-
-        if ($form->isValid()) {
+        try {
+            $form = $this->validateForm($rpplf);
 
             // Get datas
             $packId = $form->get('packId')->getData();
             $productId = $form->get('productId')->getData();
 
-            // Search and remove
-            ProductPackQuery::create()
-                    ->filterByPackId($packId)
-                    ->filterByProductId($productId)
-                    ->delete();
-        }
+            // Dispatch
+            $event = new ProductPackEvent($packId, $productId);
+            $this->dispatch('action.removeProductPackLink', $event);
 
-        // Find product id for redirection
-        $toProductId = PackQuery::create()
+            // Return to the product
+            $toProduct = PackQuery::create()
                 ->select('ProductId')
                 ->findOneById($packId);
 
-        $this->redirect(URL::getInstance()->absoluteUrl($this->getRoute(
-                                'admin.products.update', array('product_id' => $toProductId))));
+            return $this->generateRedirectFromRoute(
+                'admin.products.update',
+                array(
+                    'product_id' => $toProduct,
+                    'current_tab' => 'modules'
+                )
+            );
+        } catch (FormValidationException $e) {
+            throw new \Exception($this->createStandardFormValidationErrorMessage($e));
+        }
     }
 
 }

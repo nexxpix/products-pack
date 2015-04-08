@@ -19,7 +19,8 @@ class ChangePackStatusForm extends BaseForm
     protected function buildForm()
     {
         $this->formBuilder
-            ->add("productId", "number", array(
+            ->add("productId", "number",
+                array(
                     "constraints" => array(
                         new Constraints\NotBlank(),
                         /*new Constraints\Callback(array(
@@ -39,7 +40,6 @@ class ChangePackStatusForm extends BaseForm
     // Check if the product - pack combination already exists
     public function verifyExistingLink($value, ExecutionContextInterface $context)
     {
-        // Search if the product is linked to a pack
         $productPackQuery = ProductPackQuery::create()->findByProductId($value);
         
         if ($productPackQuery) {

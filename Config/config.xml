@@ -15,11 +15,15 @@
         <form name="productspack.productpack.remove" class="ProductsPack\Form\RemoveProductPackLinkForm" />
     </forms>
 
-    <commands>
-    </commands>
+    <hooks>
+        <hook id="productspack.hook" class="ProductsPack\Hook\ProductsPackHook" scope="request">
+            <tag name="hook.event_listener" event="product.tab-content" type="back"/>
+            <tag name="hook.event_listener" event="product.edit-js" type="back"/>
+        </hook>
+    </hooks>
 
     <services>
-        <service id="productspack.listener.before_deleteproduct" class="ProductsPack\Listener\DeleteProductListener" scope="request">
+        <service id="productspack.listener" class="ProductsPack\Listener\ProductsPackListener" scope="request">
             <argument type="service" id="request"/>
             <tag name="kernel.event_subscriber"/>
         </service>
