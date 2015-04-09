@@ -18,6 +18,8 @@ use Thelia\Install\Database;
 
 class ProductsPack extends BaseModule
 {
+    const DOMAIN = 'productspack';
+
     public function postActivation(ConnectionInterface $con = null)
     {
         parent::postActivation($con);

@@ -66,7 +66,7 @@ List or find the products linked to a pack.
 
 We are on the page of a product changed into a pack and want to list all the products which belong to the current product (which is a pack).
 
-{loop type="pack" name="productsPack" product_id="{product attr="id"}" is_active="true"}
+{loop type="pack" name="productsPack" product_id={product attr="id"} is_active="true"}
     {loop type="product" name="productPack" id=$PRODUCT_ID}
         {$TITLE}
         ...
@@ -83,4 +83,5 @@ We are on the page of a product changed into a pack and want to list all the pro
 
 ## Other ?
 
-Once you have found a pack or a product that belongs to a pack, simply use the PRODUCT loop with $ID or $PRODUCT_ID variable as ID parameter tu access all the product's information.
+About integration : once you have found, with the loop, a pack or a product that belongs to a pack,
+simply use the PRODUCT loop with $ID or $PRODUCT_ID variable as ID parameter tu access all the product's information.

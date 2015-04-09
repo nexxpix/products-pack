@@ -3,7 +3,9 @@
 namespace ProductsPack\Form;
 
 use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\ExecutionContextInterface;
 use Thelia\Form\BaseForm;
+use ProductsPack\ProductsPack;
 use ProductsPack\Model\PackQuery;
 use ProductsPack\Model\ProductPackQuery;
 
@@ -16,6 +18,11 @@ use ProductsPack\Model\ProductPackQuery;
  */
 class LinkProductToPackForm extends BaseForm
 {
+    public function getName()
+    {
+        return "productspack_productpack_create";
+    }
+
     protected function buildForm()
     {
         $this->formBuilder
@@ -23,59 +30,58 @@ class LinkProductToPackForm extends BaseForm
             array(
                 "constraints" => array(
                     new Constraints\NotBlank(),
-                    /*new Constraints\Callback(array(
-                        "methods" => array(
-                            array($this,
-                            "verifyNotActivePack")
+                    new Constraints\Callback(
+                        array(
+                            "methods" => array(
+                                array($this,
+                                    "checkNotPack"
+                                )
+                            )
                         )
-                    ))*/
-                )
+                    )
+                ),
+                "label" => $this->translator->trans('Select a pack for this product', [], ProductsPack::DOMAIN.'.bo.default')
             )
         )
         ->add("packId", "number",
             array(
                 "constraints" => array(
                     new Constraints\NotBlank(),
-                    /*new Constraints\Callback(array(
-                        "methods" => array(
-                            array($this,
-                            "verifyExistingLink")
+                    new Constraints\Callback(
+                        array(
+                            "methods" => array(
+                                array($this,
+                                    "checkExistingLink"
+                                )
+                            )
                         )
-                    ))*/
+                    )
                 ),
-                "label" => "Select a pack for this product"
+                "label" => $this->translator->trans('Select a pack for this product', [], ProductsPack::DOMAIN.'.bo.default')
             )
         );
     }
     
-    // Check if the product is an active pack before trying to put it in a pack
-    public function verifyNotActivePack($value, ExecutionContextInterface $context)
+    // Check if the product is a pack before trying to put it in a pack
+    public function checkNotPack($value, ExecutionContextInterface $context)
     {
         $packQuery = PackQuery::create()
-                    ->filterByIsActive(1)
-                    ->findOneByProductId($value);
+            ->findOneByProductId($value);
         
-        if ($packQuery) {
-            $context->addViolation("This product is already a pack and can't be part of a pack.");
+        if ($packQuery !== null) {
+            $context->addViolation($this->translator->trans("This product is already / has been a pack and can't be part of a pack", [], ProductsPack::DOMAIN.'.bo.default'));
         }
     }
     
     // Check if the product - pack combination already exists
-    public function verifyExistingLink($value, ExecutionContextInterface $context)
+    public function checkExistingLink($value, ExecutionContextInterface $context)
     {
-        $data = $context->getRoot()->getData();
-
         $productPackQuery = ProductPackQuery::create()
-                        ->filterByPackId($data["packId"])
-                        ->findByProductId($data["productId"]);
-        
-        if ($productPackQuery) {
-            $context->addViolation("This product is already linked to the selected pack.");
-        }
-    }
+            ->filterByPackId($value)
+            ->findByProductId($this->getForm()->getData()['productId']);
 
-    public function getName()
-    {
-        return "productspack_productpack_create";
+        if (count($productPackQuery) !== 0) {
+            $context->addViolation($this->translator->trans('This product is already linked to the selected pack', [], ProductsPack::DOMAIN.'.bo.default'));
+        }
     }
 }

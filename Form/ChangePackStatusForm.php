@@ -2,10 +2,13 @@
 
 namespace ProductsPack\Form;
 
+use ProductsPack\ProductsPack;
+use ProductsPack\Model\PackQuery;
+use ProductsPack\Model\ProductPackQuery;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Thelia\Form\BaseForm;
-use ProductsPack\Model\ProductPackQuery;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 /**
  * Class ChangePackStatusForm
@@ -16,39 +19,72 @@ use ProductsPack\Model\ProductPackQuery;
  */
 class ChangePackStatusForm extends BaseForm
 {
-    protected function buildForm()
-    {
-        $this->formBuilder
-            ->add("productId", "number",
-                array(
-                    "constraints" => array(
-                        new Constraints\NotBlank(),
-                        /*new Constraints\Callback(array(
-                            "methods" => array(
-                                array($this,
-                                "verifyExistingLink")
-                            )
-                        ))*/
-                    )
-                )
-            )
-            ->add("isPack", "checkbox", array(
-                "label" => "Is this product a pack")
-        );
-    }
-    
-    // Check if the product - pack combination already exists
-    public function verifyExistingLink($value, ExecutionContextInterface $context)
-    {
-        $productPackQuery = ProductPackQuery::create()->findByProductId($value);
-        
-        if ($productPackQuery) {
-            $context->addViolation("This product is linked to a pack. You can't define it as a pack.");
-        }
-    }
-
     public function getName()
     {
         return "productspack_pack_changestatus";
+    }
+
+    protected function buildForm()
+    {
+        $this->formBuilder
+        ->add(
+            "productId",
+            "number",
+            array(
+                "constraints" => array(
+                    new Constraints\NotBlank(),
+                    new Constraints\Callback(
+                        array(
+                            "methods" => array(
+                                array($this,
+                                    "checkExistingLink"
+                                )
+                            )
+                        )
+                    )
+                ),
+                "label" => $this->translator->trans('Is this product a pack', [], ProductsPack::DOMAIN.'.bo.default')
+            )
+        )
+        ->add(
+            "isPack",
+            "checkbox",
+            array(
+                "constraints" => array(
+                    new Constraints\Callback(
+                        array(
+                            "methods" => array(
+                                array($this,
+                                    "checkDifferentState"
+                                )
+                            )
+                        )
+                    )
+                ),
+                "label" => $this->translator->trans('Is this product a pack', [], ProductsPack::DOMAIN.'.bo.default')
+            )
+        );
+    }
+
+    // Check if the product - pack combination already exists
+    public function checkExistingLink($value, ExecutionContextInterface $context)
+    {
+        $productPackQuery = ProductPackQuery::create()->findByProductId($value);
+
+        if (count($productPackQuery) !== 0) {
+            $context->addViolation($this->translator->trans("This product already belongs to one or several pack(s). You can't make packs of packs", [], ProductsPack::DOMAIN.'.bo.default'));
+        }
+    }
+
+    public function checkDifferentState($value, ExecutionContextInterface $context)
+    {
+        $packQuery = PackQuery::create()
+            ->filterByProductId($this->getForm()->getData()['productId'])
+            ->filterByIsActive($value, Criteria::EQUAL)
+            ->find();
+
+        if (count($packQuery) !== 0) {
+            $context->addViolation($this->translator->trans("The product is already what you want it to be", [], ProductsPack::DOMAIN.'.bo.default'));
+        }
     }
 }

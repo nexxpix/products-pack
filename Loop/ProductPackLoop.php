@@ -19,14 +19,13 @@ use ProductsPack\Model\ProductPackQuery;
  */
 class ProductPackLoop extends BaseI18nLoop implements PropelSearchLoopInterface
 {
-
     public $countable = true;
 
     protected function getArgDefinitions()
     {
         return new ArgumentCollection(
-                Argument::createIntListTypeArgument('pack_id'),
-                Argument::createIntListTypeArgument('product_id')
+            Argument::createIntListTypeArgument('pack_id'),
+            Argument::createIntListTypeArgument('product_id')
         );
     }
 
@@ -54,8 +53,8 @@ class ProductPackLoop extends BaseI18nLoop implements PropelSearchLoopInterface
             $loopResultRow = new LoopResultRow($productPack);
 
             $loopResultRow
-                    ->set("PACK_ID", $productPack->getPackId())
-                    ->set("PRODUCT_ID", $productPack->getProductId());
+                ->set("PACK_ID", $productPack->getPackId())
+                ->set("PRODUCT_ID", $productPack->getProductId());
 
             $loopResult->addRow($loopResultRow);
         }
