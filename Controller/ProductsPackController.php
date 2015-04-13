@@ -11,7 +11,6 @@ use ProductsPack\Form\ChangePackStatusForm;
 use ProductsPack\Form\LinkProductToPackForm;
 use ProductsPack\Form\RemoveProductPackLinkForm;
 use ProductsPack\Model\PackQuery;
-use ProductsPack\Model\ProductPackQuery;
 use ProductsPack\Event\PackEvent;
 
 /**
@@ -19,7 +18,7 @@ use ProductsPack\Event\PackEvent;
  * Manage actions of ProductsPack module
  * 
  * @package ProductsPack\Controller
- * @author Nexxpix - Etienne PERRIERE <eperriere@nexxpix.fr>
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
 class ProductsPackController extends BaseAdminController
 {

@@ -15,7 +15,7 @@ use ProductsPack\Model\PackQuery;
  * Definition of the Pack loop of ProductsPack module
  * 
  * @package ProductsPack\Loop
- * @author Nexxpix - Etienne PERRIERE <eperriere@nexxpix.fr>
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
 class PackLoop extends BaseI18nLoop implements PropelSearchLoopInterface
 {

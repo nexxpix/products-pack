@@ -10,7 +10,7 @@ use Thelia\Form\BaseForm;
  * Build form to remove the link between a product and a pack it belongs to
  *
  * @package ProductsPack\Form
- * @author Nexxpix - Etienne PERRIERE <eperriere@nexxpix.fr>
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
 class RemoveProductPackLinkForm extends BaseForm
 {

@@ -14,7 +14,7 @@ use ProductsPack\Model\ProductPackQuery;
  * Build form to link a product to a pack
  * 
  * @package ProductsPack\Form
- * @author Nexxpix - Etienne PERRIERE <eperriere@nexxpix.fr>
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
 class LinkProductToPackForm extends BaseForm
 {

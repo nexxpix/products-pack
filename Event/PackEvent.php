@@ -4,6 +4,11 @@ namespace ProductsPack\Event;
 
 use Thelia\Core\Event\ActionEvent;
 
+/**
+ * Class PackEvent
+ * @package ProductsPack\Event
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
+ */
 class PackEvent extends ActionEvent {
 
     protected $isActive;

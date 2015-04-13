@@ -18,7 +18,7 @@ use ProductsPack\Model\ProductPackQuery;
  * Manage actions to make on packs or products linked to pack when deleting a product
  *
  * @package ProductsPack\Listener
- * @author Nexxpix - Etienne PERRIERE <eperriere@nexxpix.fr>
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
 class ProductsPackListener extends BaseAction implements EventSubscriberInterface
 {

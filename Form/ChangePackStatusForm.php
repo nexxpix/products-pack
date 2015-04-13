@@ -15,7 +15,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
  * Build form to change a pack status
  * 
  * @package ProductsPack\Form
- * @author Nexxpix - Etienne PERRIERE <eperriere@nexxpix.fr>
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
 class ChangePackStatusForm extends BaseForm
 {
