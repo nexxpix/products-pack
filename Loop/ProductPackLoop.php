@@ -15,18 +15,17 @@ use ProductsPack\Model\ProductPackQuery;
  * Definition of the ProductPack loop of ProductsPack module
  * 
  * @package ProductsPack\Loop
- * @author Nexxpix - Etienne PERRIERE <eperriere@nexxpix.fr>
+ * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
 class ProductPackLoop extends BaseI18nLoop implements PropelSearchLoopInterface
 {
-
     public $countable = true;
 
     protected function getArgDefinitions()
     {
         return new ArgumentCollection(
-                Argument::createIntListTypeArgument('pack_id'),
-                Argument::createIntListTypeArgument('product_id')
+            Argument::createIntListTypeArgument('pack_id'),
+            Argument::createIntListTypeArgument('product_id')
         );
     }
 
@@ -54,8 +53,8 @@ class ProductPackLoop extends BaseI18nLoop implements PropelSearchLoopInterface
             $loopResultRow = new LoopResultRow($productPack);
 
             $loopResultRow
-                    ->set("PACK_ID", $productPack->getPackId())
-                    ->set("PRODUCT_ID", $productPack->getProductId());
+                ->set("PACK_ID", $productPack->getPackId())
+                ->set("PRODUCT_ID", $productPack->getProductId());
 
             $loopResult->addRow($loopResultRow);
         }
