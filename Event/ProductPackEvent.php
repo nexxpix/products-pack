@@ -9,12 +9,13 @@ use Thelia\Core\Event\ActionEvent;
  * @package ProductsPack\Event
  * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
-class ProductPackEvent extends ActionEvent {
+class ProductPackEvent extends ActionEvent
+{
 
     protected $packId;
     protected $productId;
 
-    function __construct(
+    public function __construct(
         $packId,
         $productId
     ) {
@@ -53,7 +54,4 @@ class ProductPackEvent extends ActionEvent {
     {
         $this->productId = $productId;
     }
-
-
-
 }

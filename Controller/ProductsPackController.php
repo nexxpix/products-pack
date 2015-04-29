@@ -16,7 +16,7 @@ use ProductsPack\Event\PackEvent;
 /**
  * Class ProductsPackController
  * Manage actions of ProductsPack module
- * 
+ *
  * @package ProductsPack\Controller
  * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
@@ -150,5 +150,4 @@ class ProductsPackController extends BaseAdminController
             throw new \Exception($this->createStandardFormValidationErrorMessage($e));
         }
     }
-
 }

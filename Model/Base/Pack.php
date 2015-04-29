@@ -215,7 +215,7 @@ abstract class Pack implements ActiveRecordInterface
         }
 
         if (null === $this->getPrimaryKey()
-            || null === $obj->getPrimaryKey())  {
+            || null === $obj->getPrimaryKey()) {
             return false;
         }
 
@@ -365,7 +365,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function getId()
     {
-
         return $this->id;
     }
 
@@ -376,7 +375,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function getIsActive()
     {
-
         return $this->is_active;
     }
 
@@ -387,7 +385,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function getProductId()
     {
-
         return $this->product_id;
     }
 
@@ -501,8 +498,6 @@ abstract class Pack implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PackTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
@@ -520,7 +515,6 @@ abstract class Pack implements ActiveRecordInterface
             }
 
             return $startcol + 3; // 3 = PackTableMap::NUM_HYDRATE_COLUMNS.
-
         } catch (Exception $e) {
             throw new PropelException("Error populating \ProductsPack\Model\Pack object", 0, $e);
         }
@@ -585,7 +579,6 @@ abstract class Pack implements ActiveRecordInterface
 
             $this->aProduct = null;
             $this->collProductPacks = null;
-
         } // if (deep)
     }
 
@@ -729,8 +722,8 @@ abstract class Pack implements ActiveRecordInterface
                 }
             }
 
-                if ($this->collProductPacks !== null) {
-            foreach ($this->collProductPacks as $referrerFK) {
+            if ($this->collProductPacks !== null) {
+                foreach ($this->collProductPacks as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -738,7 +731,6 @@ abstract class Pack implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
-
         }
 
         return $affectedRows;
@@ -975,9 +967,15 @@ abstract class Pack implements ActiveRecordInterface
     {
         $keys = PackTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setIsActive($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setProductId($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) {
+            $this->setId($arr[$keys[0]]);
+        }
+        if (array_key_exists($keys[1], $arr)) {
+            $this->setIsActive($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setProductId($arr[$keys[2]]);
+        }
     }
 
     /**
@@ -989,9 +987,15 @@ abstract class Pack implements ActiveRecordInterface
     {
         $criteria = new Criteria(PackTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(PackTableMap::ID)) $criteria->add(PackTableMap::ID, $this->id);
-        if ($this->isColumnModified(PackTableMap::IS_ACTIVE)) $criteria->add(PackTableMap::IS_ACTIVE, $this->is_active);
-        if ($this->isColumnModified(PackTableMap::PRODUCT_ID)) $criteria->add(PackTableMap::PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(PackTableMap::ID)) {
+            $criteria->add(PackTableMap::ID, $this->id);
+        }
+        if ($this->isColumnModified(PackTableMap::IS_ACTIVE)) {
+            $criteria->add(PackTableMap::IS_ACTIVE, $this->is_active);
+        }
+        if ($this->isColumnModified(PackTableMap::PRODUCT_ID)) {
+            $criteria->add(PackTableMap::PRODUCT_ID, $this->product_id);
+        }
 
         return $criteria;
     }
@@ -1038,7 +1042,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-
         return null === $this->getId();
     }
 
@@ -1068,12 +1071,11 @@ abstract class Pack implements ActiveRecordInterface
                     $copyObj->addProductPack($relObj->copy($deepCopy));
                 }
             }
-
         } // if ($deepCopy)
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setId(null); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1109,7 +1111,7 @@ abstract class Pack implements ActiveRecordInterface
     public function setProduct(ChildProduct $v = null)
     {
         if ($v === null) {
-            $this->setProductId(NULL);
+            $this->setProductId(null);
         } else {
             $this->setProductId($v->getId());
         }
@@ -1476,7 +1478,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
     }
 
     /**
@@ -1495,7 +1496,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
     }
 
     /**
@@ -1514,7 +1514,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
     }
 
     /**
@@ -1533,7 +1532,6 @@ abstract class Pack implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
     }
 
 
@@ -1577,5 +1575,4 @@ abstract class Pack implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

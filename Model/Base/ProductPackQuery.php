@@ -536,16 +536,16 @@ abstract class ProductPackQuery extends ModelCriteria
      */
      public function delete(ConnectionInterface $con = null)
      {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductPackTableMap::DATABASE_NAME);
-        }
+         if (null === $con) {
+             $con = Propel::getServiceContainer()->getWriteConnection(ProductPackTableMap::DATABASE_NAME);
+         }
 
-        $criteria = $this;
+         $criteria = $this;
 
         // Set the correct dbName
         $criteria->setDbName(ProductPackTableMap::DATABASE_NAME);
 
-        $affectedRows = 0; // initialize var to track total num of affected rows
+         $affectedRows = 0; // initialize var to track total num of affected rows
 
         try {
             // use transaction because $criteria could contain info
@@ -553,7 +553,7 @@ abstract class ProductPackQuery extends ModelCriteria
             $con->beginTransaction();
 
 
-        ProductPackTableMap::removeInstanceFromPool($criteria);
+            ProductPackTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
             ProductPackTableMap::clearRelatedInstancePool();
@@ -564,6 +564,5 @@ abstract class ProductPackQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
-    }
-
+     }
 } // ProductPackQuery

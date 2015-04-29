@@ -12,7 +12,7 @@ use ProductsPack\Model\ProductPackQuery;
 /**
  * Class LinkProductToPackForm
  * Build form to link a product to a pack
- * 
+ *
  * @package ProductsPack\Form
  * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */

@@ -4,7 +4,6 @@ namespace ProductsPack\Model;
 
 use ProductsPack\Model\Base\ProductPackQuery as BaseProductPackQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'product_pack' table.
  *
@@ -17,5 +16,4 @@ use ProductsPack\Model\Base\ProductPackQuery as BaseProductPackQuery;
  */
 class ProductPackQuery extends BaseProductPackQuery
 {
-
 } // ProductPackQuery
