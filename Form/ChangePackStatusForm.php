@@ -13,7 +13,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 /**
  * Class ChangePackStatusForm
  * Build form to change a pack status
- * 
+ *
  * @package ProductsPack\Form
  * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */

@@ -13,7 +13,7 @@ use ProductsPack\Model\ProductPackQuery;
 /**
  * Class ProductPackLoop
  * Definition of the ProductPack loop of ProductsPack module
- * 
+ *
  * @package ProductsPack\Loop
  * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
@@ -49,7 +49,6 @@ class ProductPackLoop extends BaseI18nLoop implements PropelSearchLoopInterface
     public function parseResults(LoopResult $loopResult)
     {
         foreach ($loopResult->getResultDataCollection() as $productPack) {
-            
             $loopResultRow = new LoopResultRow($productPack);
 
             $loopResultRow
@@ -61,5 +60,4 @@ class ProductPackLoop extends BaseI18nLoop implements PropelSearchLoopInterface
         
         return $loopResult;
     }
-
 }

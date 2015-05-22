@@ -134,5 +134,4 @@ class ProductsPackListener extends BaseAction implements EventSubscriberInterfac
             ->filterByProductId($event->getProductId())
             ->delete();
     }
-
 }

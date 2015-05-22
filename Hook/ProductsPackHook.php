@@ -10,7 +10,8 @@ use Thelia\Core\Hook\BaseHook;
  * @package ProductsPack\Hook
  * @author Etienne PERRIERE <eperriere@openstudio.fr> - Nexxpix - OpenStudio
  */
-class ProductsPackHook extends BaseHook {
+class ProductsPackHook extends BaseHook
+{
 
     public function onProductTabContent(HookRenderEvent $event)
     {

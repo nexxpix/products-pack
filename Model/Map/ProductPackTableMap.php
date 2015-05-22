@@ -14,7 +14,6 @@ use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 
-
 /**
  * This class defines the structure of the 'product_pack' table.
  *
@@ -91,7 +90,7 @@ class ProductPackTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
+    protected static $fieldNames = array(
         self::TYPE_PHPNAME       => array('PackId', 'ProductId', ),
         self::TYPE_STUDLYPHPNAME => array('packId', 'productId', ),
         self::TYPE_COLNAME       => array(ProductPackTableMap::PACK_ID, ProductPackTableMap::PRODUCT_ID, ),
@@ -106,7 +105,7 @@ class ProductPackTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
+    protected static $fieldKeys = array(
         self::TYPE_PHPNAME       => array('PackId' => 0, 'ProductId' => 1, ),
         self::TYPE_STUDLYPHPNAME => array('packId' => 0, 'productId' => 1, ),
         self::TYPE_COLNAME       => array(ProductPackTableMap::PACK_ID => 0, ProductPackTableMap::PRODUCT_ID => 1, ),
@@ -131,8 +130,8 @@ class ProductPackTableMap extends TableMap
         $this->setPackage('ProductsPack.Model');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('PACK_ID', 'PackId', 'INTEGER' , 'pack', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('PRODUCT_ID', 'ProductId', 'INTEGER' , 'product', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('PACK_ID', 'PackId', 'INTEGER', 'pack', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('PRODUCT_ID', 'ProductId', 'INTEGER', 'product', 'ID', true, null, null);
     } // initialize()
 
     /**
@@ -180,7 +179,6 @@ class ProductPackTableMap extends TableMap
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \ProductsPack\Model\ProductPack) {
                 $key = serialize(array((string) $value->getPackId(), (string) $value->getProductId()));
-
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
                 $key = serialize(array((string) $value[0], (string) $value[1]));
@@ -232,8 +230,7 @@ class ProductPackTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-
-            return $pks;
+        return $pks;
     }
 
     /**
@@ -356,10 +353,10 @@ class ProductPackTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductPackTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(ProductPackTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new ProductPackTableMap());
-      }
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProductPackTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ProductPackTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ProductPackTableMap());
+        }
     }
 
     /**
@@ -375,17 +372,17 @@ class ProductPackTableMap extends TableMap
      */
      public static function doDelete($values, ConnectionInterface $con = null)
      {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ProductPackTableMap::DATABASE_NAME);
-        }
+         if (null === $con) {
+             $con = Propel::getServiceContainer()->getWriteConnection(ProductPackTableMap::DATABASE_NAME);
+         }
 
-        if ($values instanceof Criteria) {
-            // rename for clarity
+         if ($values instanceof Criteria) {
+             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \ProductsPack\Model\ProductPack) { // it's a model object
+         } elseif ($values instanceof \ProductsPack\Model\ProductPack) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
-        } else { // it's a primary key, or an array of pks
+         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(ProductPackTableMap::DATABASE_NAME);
             // primary key is composite; we therefore, expect
             // the primary key passed to be an array of pkey values
@@ -393,23 +390,25 @@ class ProductPackTableMap extends TableMap
                 // array is not multi-dimensional
                 $values = array($values);
             }
-            foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(ProductPackTableMap::PACK_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(ProductPackTableMap::PRODUCT_ID, $value[1]));
-                $criteria->addOr($criterion);
+             foreach ($values as $value) {
+                 $criterion = $criteria->getNewCriterion(ProductPackTableMap::PACK_ID, $value[0]);
+                 $criterion->addAnd($criteria->getNewCriterion(ProductPackTableMap::PRODUCT_ID, $value[1]));
+                 $criteria->addOr($criterion);
+             }
+         }
+
+         $query = ProductPackQuery::create()->mergeWith($criteria);
+
+         if ($values instanceof Criteria) {
+             ProductPackTableMap::clearInstancePool();
+         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
+            foreach ((array) $values as $singleval) {
+                ProductPackTableMap::removeInstanceFromPool($singleval);
             }
-        }
+         }
 
-        $query = ProductPackQuery::create()->mergeWith($criteria);
-
-        if ($values instanceof Criteria) { ProductPackTableMap::clearInstancePool();
-        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { ProductPackTableMap::removeInstanceFromPool($singleval);
-            }
-        }
-
-        return $query->delete($con);
-    }
+         return $query->delete($con);
+     }
 
     /**
      * Deletes all rows from the product_pack table.
@@ -460,7 +459,6 @@ class ProductPackTableMap extends TableMap
 
         return $pk;
     }
-
 } // ProductPackTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //

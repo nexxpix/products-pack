@@ -212,7 +212,6 @@ abstract class PackQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
-
         return $this->addUsingAlias(PackTableMap::ID, $key, Criteria::EQUAL);
     }
 
@@ -225,7 +224,6 @@ abstract class PackQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
-
         return $this->addUsingAlias(PackTableMap::ID, $keys, Criteria::IN);
     }
 
@@ -549,16 +547,16 @@ abstract class PackQuery extends ModelCriteria
      */
      public function delete(ConnectionInterface $con = null)
      {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PackTableMap::DATABASE_NAME);
-        }
+         if (null === $con) {
+             $con = Propel::getServiceContainer()->getWriteConnection(PackTableMap::DATABASE_NAME);
+         }
 
-        $criteria = $this;
+         $criteria = $this;
 
         // Set the correct dbName
         $criteria->setDbName(PackTableMap::DATABASE_NAME);
 
-        $affectedRows = 0; // initialize var to track total num of affected rows
+         $affectedRows = 0; // initialize var to track total num of affected rows
 
         try {
             // use transaction because $criteria could contain info
@@ -566,7 +564,7 @@ abstract class PackQuery extends ModelCriteria
             $con->beginTransaction();
 
 
-        PackTableMap::removeInstanceFromPool($criteria);
+            PackTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
             PackTableMap::clearRelatedInstancePool();
@@ -577,6 +575,5 @@ abstract class PackQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
-    }
-
+     }
 } // PackQuery

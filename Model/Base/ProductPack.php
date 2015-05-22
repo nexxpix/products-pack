@@ -200,7 +200,7 @@ abstract class ProductPack implements ActiveRecordInterface
         }
 
         if (null === $this->getPrimaryKey()
-            || null === $obj->getPrimaryKey())  {
+            || null === $obj->getPrimaryKey()) {
             return false;
         }
 
@@ -350,7 +350,6 @@ abstract class ProductPack implements ActiveRecordInterface
      */
     public function getPackId()
     {
-
         return $this->pack_id;
     }
 
@@ -361,7 +360,6 @@ abstract class ProductPack implements ActiveRecordInterface
      */
     public function getProductId()
     {
-
         return $this->product_id;
     }
 
@@ -450,8 +448,6 @@ abstract class ProductPack implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductPackTableMap::translateFieldName('PackId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->pack_id = (null !== $col) ? (int) $col : null;
 
@@ -466,7 +462,6 @@ abstract class ProductPack implements ActiveRecordInterface
             }
 
             return $startcol + 2; // 2 = ProductPackTableMap::NUM_HYDRATE_COLUMNS.
-
         } catch (Exception $e) {
             throw new PropelException("Error populating \ProductsPack\Model\ProductPack object", 0, $e);
         }
@@ -676,7 +671,6 @@ abstract class ProductPack implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
-
         }
 
         return $affectedRows;
@@ -889,8 +883,12 @@ abstract class ProductPack implements ActiveRecordInterface
     {
         $keys = ProductPackTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setPackId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setProductId($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) {
+            $this->setPackId($arr[$keys[0]]);
+        }
+        if (array_key_exists($keys[1], $arr)) {
+            $this->setProductId($arr[$keys[1]]);
+        }
     }
 
     /**
@@ -902,8 +900,12 @@ abstract class ProductPack implements ActiveRecordInterface
     {
         $criteria = new Criteria(ProductPackTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProductPackTableMap::PACK_ID)) $criteria->add(ProductPackTableMap::PACK_ID, $this->pack_id);
-        if ($this->isColumnModified(ProductPackTableMap::PRODUCT_ID)) $criteria->add(ProductPackTableMap::PRODUCT_ID, $this->product_id);
+        if ($this->isColumnModified(ProductPackTableMap::PACK_ID)) {
+            $criteria->add(ProductPackTableMap::PACK_ID, $this->pack_id);
+        }
+        if ($this->isColumnModified(ProductPackTableMap::PRODUCT_ID)) {
+            $criteria->add(ProductPackTableMap::PRODUCT_ID, $this->product_id);
+        }
 
         return $criteria;
     }
@@ -957,7 +959,6 @@ abstract class ProductPack implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-
         return (null === $this->getPackId()) && (null === $this->getProductId());
     }
 
@@ -1013,7 +1014,7 @@ abstract class ProductPack implements ActiveRecordInterface
     public function setPack(ChildPack $v = null)
     {
         if ($v === null) {
-            $this->setPackId(NULL);
+            $this->setPackId(null);
         } else {
             $this->setPackId($v->getId());
         }
@@ -1064,7 +1065,7 @@ abstract class ProductPack implements ActiveRecordInterface
     public function setProduct(ChildProduct $v = null)
     {
         if ($v === null) {
-            $this->setProductId(NULL);
+            $this->setProductId(null);
         } else {
             $this->setProductId($v->getId());
         }
@@ -1163,7 +1164,6 @@ abstract class ProductPack implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
     }
 
     /**
@@ -1182,7 +1182,6 @@ abstract class ProductPack implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
     }
 
     /**
@@ -1201,7 +1200,6 @@ abstract class ProductPack implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
     }
 
     /**
@@ -1220,7 +1218,6 @@ abstract class ProductPack implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
     }
 
 
@@ -1264,5 +1261,4 @@ abstract class ProductPack implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

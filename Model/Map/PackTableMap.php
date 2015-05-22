@@ -14,7 +14,6 @@ use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 
-
 /**
  * This class defines the structure of the 'pack' table.
  *
@@ -96,7 +95,7 @@ class PackTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
+    protected static $fieldNames = array(
         self::TYPE_PHPNAME       => array('Id', 'IsActive', 'ProductId', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'isActive', 'productId', ),
         self::TYPE_COLNAME       => array(PackTableMap::ID, PackTableMap::IS_ACTIVE, PackTableMap::PRODUCT_ID, ),
@@ -111,7 +110,7 @@ class PackTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
+    protected static $fieldKeys = array(
         self::TYPE_PHPNAME       => array('Id' => 0, 'IsActive' => 1, 'ProductId' => 2, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isActive' => 1, 'productId' => 2, ),
         self::TYPE_COLNAME       => array(PackTableMap::ID => 0, PackTableMap::IS_ACTIVE => 1, PackTableMap::PRODUCT_ID => 2, ),
@@ -185,8 +184,7 @@ class PackTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-
-            return (int) $row[
+        return (int) $row[
                             $indexType == TableMap::TYPE_NUM
                             ? 0 + $offset
                             : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
@@ -315,10 +313,10 @@ class PackTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(PackTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(PackTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new PackTableMap());
-      }
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PackTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(PackTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new PackTableMap());
+        }
     }
 
     /**
@@ -334,31 +332,33 @@ class PackTableMap extends TableMap
      */
      public static function doDelete($values, ConnectionInterface $con = null)
      {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PackTableMap::DATABASE_NAME);
-        }
+         if (null === $con) {
+             $con = Propel::getServiceContainer()->getWriteConnection(PackTableMap::DATABASE_NAME);
+         }
 
-        if ($values instanceof Criteria) {
-            // rename for clarity
+         if ($values instanceof Criteria) {
+             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \ProductsPack\Model\Pack) { // it's a model object
+         } elseif ($values instanceof \ProductsPack\Model\Pack) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
-        } else { // it's a primary key, or an array of pks
+         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(PackTableMap::DATABASE_NAME);
-            $criteria->add(PackTableMap::ID, (array) $values, Criteria::IN);
-        }
+             $criteria->add(PackTableMap::ID, (array) $values, Criteria::IN);
+         }
 
-        $query = PackQuery::create()->mergeWith($criteria);
+         $query = PackQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { PackTableMap::clearInstancePool();
-        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { PackTableMap::removeInstanceFromPool($singleval);
+         if ($values instanceof Criteria) {
+             PackTableMap::clearInstancePool();
+         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
+            foreach ((array) $values as $singleval) {
+                PackTableMap::removeInstanceFromPool($singleval);
             }
-        }
+         }
 
-        return $query->delete($con);
-    }
+         return $query->delete($con);
+     }
 
     /**
      * Deletes all rows from the pack table.
@@ -392,7 +392,7 @@ class PackTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Pack object
         }
 
-        if ($criteria->containsKey(PackTableMap::ID) && $criteria->keyContainsValue(PackTableMap::ID) ) {
+        if ($criteria->containsKey(PackTableMap::ID) && $criteria->keyContainsValue(PackTableMap::ID)) {
             throw new PropelException('Cannot insert a value for auto-increment primary key ('.PackTableMap::ID.')');
         }
 
@@ -413,7 +413,6 @@ class PackTableMap extends TableMap
 
         return $pk;
     }
-
 } // PackTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
